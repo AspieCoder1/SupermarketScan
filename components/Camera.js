@@ -2,11 +2,17 @@ import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
+import { connect } from 'react-redux';
+import axios from 'axios';
+import * as FileSystem from 'expo-file-system';
 
-export default class CameraExample extends React.Component {
+const config = require('../config/config.json');
+
+class CameraComponent extends React.Component {
 	state = {
 		hasCameraPermission: null,
 		type: Camera.Constants.Type.back,
+		disabled: false,
 	};
 
 	async componentDidMount() {
@@ -41,11 +47,47 @@ export default class CameraExample extends React.Component {
 							}}
 						>
 							<TouchableOpacity
+								disabled={this.state.disabled}
 								onPress={async () => {
+									this.setState(disabled, true);
 									if (this.camera) {
-										let data = await this.camera.takePictureAsync();
-										console.log(data.uri);
+										let pic = await this.camera.takePictureAsync();
+										console.log(pic.uri);
+										console.log('sending a request to google');
+										const imageData = await FileSystem.readAsStringAsync(
+											pic.uri,
+											{
+												encoding: 'base64',
+											},
+										);
+										axios
+											.post(
+												`https://vision.googleapis.com/v1/images:annotate?key=${config.API_KEY}`,
+												{
+													requests: [
+														{
+															image: {
+																content: imageData,
+															},
+															features: [
+																{
+																	type: 'LABEL_DETECTION',
+																	maxResults: 10,
+																},
+															],
+														},
+													],
+												},
+											)
+											.then(res => {
+												const labels = res.data.responses[0].labelAnnotations.map(
+													label => label.description,
+												);
+												console.log(labels);
+											})
+											.catch(err => console.log(err));
 									}
+									this.setState(disabled, false);
 								}}
 							>
 								<Text
@@ -61,3 +103,8 @@ export default class CameraExample extends React.Component {
 		}
 	}
 }
+
+export default connect(
+	state => ({ state }),
+	{},
+)(CameraComponent);
