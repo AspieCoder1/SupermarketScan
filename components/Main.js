@@ -6,10 +6,6 @@ export default class Main extends React.Component {
 		return (
 			<View style={styles.container}>
 				<Text>Shopping List</Text>
-				<Button
-					title="Take Picture"
-					onPress={() => Alert.alert('Redirect to camera component')}
-				/>
 				<Text>My Basket</Text>
 			</View>
 		);

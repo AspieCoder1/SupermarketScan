@@ -1,7 +1,5 @@
 import React from 'react';
-import { Route, NativeRouter } from 'react-router-native';
-import Main from './components/Main';
-import Camera from './components/Camera';
+import Nav from './Navigation';
 
 import store from './redux/store';
 import { Provider } from 'react-redux';
@@ -9,9 +7,10 @@ import { Provider } from 'react-redux';
 export default function App() {
 	return (
 		<Provider store={store}>
-			<NativeRouter>
+			{/* <NativeRouter>
 				<Route exact path="/" component={Camera} />
-			</NativeRouter>
+			</NativeRouter> */}
+			<Nav />
 		</Provider>
 	);
 }

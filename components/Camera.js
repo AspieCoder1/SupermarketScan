@@ -11,7 +11,6 @@ const config = require('../config/config.json');
 class CameraComponent extends React.Component {
 	state = {
 		hasCameraPermission: null,
-		type: Camera.Constants.Type.back,
 		disabled: false,
 	};
 
@@ -49,7 +48,7 @@ class CameraComponent extends React.Component {
 							<TouchableOpacity
 								disabled={this.state.disabled}
 								onPress={async () => {
-									this.setState(disabled, true);
+									this.setState({ disabled: true });
 									if (this.camera) {
 										let pic = await this.camera.takePictureAsync();
 										console.log(pic.uri);
@@ -84,16 +83,16 @@ class CameraComponent extends React.Component {
 													label => label.description,
 												);
 												console.log(labels);
+												this.setState({ disabled: false });
 											})
 											.catch(err => console.log(err));
 									}
-									this.setState(disabled, false);
 								}}
 							>
 								<Text
 									style={{ fontSize: 18, marginBottom: 10, color: 'white' }}
 								>
-									Take Picture
+									{this.state.disabled ? 'Analysing' : 'Take Picture'}
 								</Text>
 							</TouchableOpacity>
 						</View>
