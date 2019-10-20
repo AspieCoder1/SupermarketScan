@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Alert } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 import { connect } from 'react-redux';
@@ -9,7 +9,7 @@ import { setPredictions } from '../redux/actions';
 
 const config = require('../config/config.json');
 
-class CameraComponent extends React.Component {
+export default class Bonus extends React.Component {
 	state = {
 		hasCameraPermission: null,
 		disabled: false,
@@ -51,50 +51,16 @@ class CameraComponent extends React.Component {
 								onPress={async () => {
 									this.setState({ disabled: true });
 									if (this.camera) {
-										let pic = await this.camera.takePictureAsync();
-										console.log(pic.uri);
-										console.log('sending a request to google');
-										const imageData = await FileSystem.readAsStringAsync(
-											pic.uri,
-											{
-												encoding: 'base64',
-											},
-										);
-										axios
-											.post(
-												`https://vision.googleapis.com/v1/images:annotate?key=${config.API_KEY}`,
-												{
-													requests: [
-														{
-															image: {
-																content: imageData,
-															},
-															features: [
-																{
-																	type: 'LABEL_DETECTION',
-																	maxResults: 10,
-																},
-															],
-														},
-													],
-												},
-											)
-											.then(res => {
-												const labels = res.data.responses[0].labelAnnotations.map(
-													label => label.description,
-												);
-												console.log(labels);
-												this.props.setPredictions(labels);
-												this.setState({ disabled: false });
-											})
-											.catch(err => console.log(err));
+										// let pic = await this.camera.takePictureAsync();
+										Alert.alert('Should post image to twitter');
 									}
+									this.setState({ disabled: false });
 								}}
 							>
 								<Text
 									style={{ fontSize: 18, marginBottom: 10, color: 'white' }}
 								>
-									{this.state.disabled ? 'Analysing...' : 'Take Picture'}
+									{this.state.disabled ? 'Scoring...' : 'Take Picture'}
 								</Text>
 							</TouchableOpacity>
 						</View>
@@ -104,8 +70,3 @@ class CameraComponent extends React.Component {
 		}
 	}
 }
-
-export default connect(
-	state => ({ state }),
-	{ setPredictions },
-)(CameraComponent);

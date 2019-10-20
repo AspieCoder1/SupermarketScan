@@ -1,4 +1,4 @@
-export const setUri = uri => ({
-	type: 'SET_URI',
-	payload: uri,
+export const setPredictions = preds => ({
+	type: 'SET_PRED',
+	payload: preds,
 });

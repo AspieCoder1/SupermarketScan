@@ -1,9 +1,9 @@
-export default (state = {}, action) => {
+export default (state, action) => {
 	switch (action.type) {
-		case 'SET_URI':
+		case 'SET_PRED':
 			return {
 				...state,
-				uri: action.payload,
+				predictions: action.payload,
 			};
 		default:
 			return state;
