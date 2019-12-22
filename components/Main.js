@@ -7,7 +7,7 @@ import _ from 'lodash';
 class Main extends React.Component {
 	state = {
 		predictions: [],
-		shoppingList: ['Apple', 'Pear', 'Grapes'],
+		shoppingList: ['Apple', 'Pear', 'Grapes', 'Pen'],
 		basket: [],
 		score: 0,
 	};
@@ -85,7 +85,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default connect(
-	state => ({ state }),
-	{},
-)(withNavigationFocus(Main));
+export default connect(state => ({ state }), {})(withNavigationFocus(Main));
